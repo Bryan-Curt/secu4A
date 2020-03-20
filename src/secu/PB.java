@@ -33,14 +33,14 @@ public class PB {
         String input;
         String userInput;
         boolean doRun = true;
-        
+        //lecture de la clé
         File f = new File("key.txt");
         FileReader fr = new FileReader(f.getAbsoluteFile());
         BufferedReader br = new BufferedReader(fr);
-        String k2r = br.readLine();
-       
+        String cle = br.readLine();
         br.close();
         fr.close();
+        //--
 
         Scanner k = new Scanner(System.in);
 
@@ -48,28 +48,22 @@ public class PB {
             client = new Socket("localhost", 4444);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             out = new PrintWriter(client.getOutputStream(), true);
+            
+            byte[] key = Base64.decode(cle);
+            SecretKey key2 = new SecretKeySpec(key, 0, key.length, "DESede");
+            
 
             System.out.print("enter msg> ");
             userInput = k.nextLine();
-            out.println(userInput);
+            
+            byte[] u = encrypteur(userInput,key2);
+            String output = Base64.encode(u);
+            
+            out.println(output);
             out.flush();
             System.out.println("done");
-
-            SecretKeySpec specification = new SecretKeySpec(userInput.getBytes(), "AES");
-            byte[] bytes = null;
             
-            KeyGenerator generator = KeyGenerator.getInstance("AES");
-            generator.init(128);
-            SecretKey key = generator.generateKey();
-            String k2w;
-            byte[] encoded = key.getEncoded();
-            k2w = Base64.encode(encoded);
-            String key2 = k2w;
             
-            Cipher chiffreur = Cipher.getInstance("AES");
-            chiffreur.init(Cipher.ENCRYPT_MODE, specification);
-            bytes = chiffreur.doFinal(key2.getBytes());
-            System.out.println(new String(bytes));
 
             if (userInput.compareToIgnoreCase("bye") == 0) {
                 System.out.println("shutting down");
@@ -88,7 +82,6 @@ public class PB {
                     } else {
                         System.out.print("enter msg> ");
                         userInput = k.nextLine();
-                        out.println(userInput);
                         out.flush();
                         if (userInput.compareToIgnoreCase("bye") == 0) {
                             System.out.println("shutting down");
@@ -105,5 +98,16 @@ public class PB {
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
         }
+
+    }
+
+    public static byte[] encrypteur(final String message, SecretKey cle)
+            throws NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        Cipher cipher = Cipher.getInstance("DESede");
+        cipher.init(Cipher.ENCRYPT_MODE, cle);
+        byte[] donnees = message.getBytes();
+
+        return cipher.doFinal(donnees);
     }
 }
