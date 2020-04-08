@@ -94,9 +94,9 @@ public class ChatServer implements Runnable {
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException, Base64DecodingException {
         byte[] donnees = Base64.decode(d);
         byte[] key = Base64.decode(c);
-        SecretKey cle = new SecretKeySpec(key, 0, key.length, "DESede");
+        SecretKey cle = new SecretKeySpec(key, 0, key.length, "AES");
 
-        Cipher cipher = Cipher.getInstance("DESede");
+        Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, cle);
 
         return new String(cipher.doFinal(donnees));

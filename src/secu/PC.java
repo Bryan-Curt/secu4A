@@ -1,5 +1,5 @@
 
-import secu.ChatServer;
+//import secu.ChatServer;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.*;
 import java.net.InetAddress;
@@ -29,17 +29,12 @@ public class PC {
             KeyGenerator keyGen;
             SecretKey cle = null;
             try {
-                keyGen = KeyGenerator.getInstance("DESede");
-                keyGen.init(168);
+                keyGen = KeyGenerator.getInstance("AES");
+                keyGen.init(128);
                 cle = keyGen.generateKey();
                 System.out.println("cle : " + new String(cle.getEncoded()));
 
-                String message = "pif paf pouf";
-                byte[] enc = encrypteur(message, cle);
-                System.out.println("texte encrypte : " + new String(enc));
                 
-                String dec = decrypteur(enc, cle);
-                System.out.println("texte decrypte : " + dec);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -92,7 +87,7 @@ public class PC {
     public static byte[] encrypteur(final String message, SecretKey cle)
             throws NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        Cipher cipher = Cipher.getInstance("DESede");
+        Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, cle);
         byte[] donnees = message.getBytes();
 
@@ -102,7 +97,7 @@ public class PC {
     public static String decrypteur(final byte[] donnees, SecretKey cle)
             throws NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        Cipher cipher = Cipher.getInstance("DESede");
+        Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, cle);
 
         return new String(cipher.doFinal(donnees));

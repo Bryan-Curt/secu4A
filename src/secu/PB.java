@@ -50,7 +50,7 @@ public class PB {
             out = new PrintWriter(client.getOutputStream(), true);
             
             byte[] key = Base64.decode(cle);
-            SecretKey key2 = new SecretKeySpec(key, 0, key.length, "DESede");
+            SecretKey key2 = new SecretKeySpec(key, 0, key.length, "AES");
             
 
             System.out.print("enter msg> ");
@@ -104,7 +104,7 @@ public class PB {
     public static byte[] encrypteur(final String message, SecretKey cle)
             throws NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        Cipher cipher = Cipher.getInstance("DESede");
+        Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, cle);
         byte[] donnees = message.getBytes();
 
